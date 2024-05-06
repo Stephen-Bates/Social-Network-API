@@ -1,4 +1,4 @@
-const { Schema, model } = require('mongoose');
+const { Schema, Types, model } = require('mongoose');
 const { formatDate } = require('../utils/helpers');
 const reactionSchema = require('./Reaction');
 
@@ -16,8 +16,9 @@ const thoughtSchema = new Schema(
             default: () => Date.now(),
             get: formatDate,
         },
-        username: {
-            type: String,
+        userId: {
+            type: Types.ObjectId,
+            ref: 'user',
             immutable: true,
             required: true,
         },
