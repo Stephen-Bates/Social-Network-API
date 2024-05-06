@@ -1,5 +1,4 @@
-const { Schema, model } = require('mongoose');
-const thoughtSchema = require('./Thought');
+const { Schema, Types, model } = require('mongoose');
 
 const userSchema = new Schema(
     {
@@ -7,6 +6,7 @@ const userSchema = new Schema(
             type: String,
             required: true,
             unique: true,
+            immutable: true,
             trim: true,
         },
         email: {
@@ -20,8 +20,8 @@ const userSchema = new Schema(
                 message: props => `${props.value} is not a valid email address`
             },
         },
-        thoughts: [{ type: Schema.Types.ObjectId, ref: 'thought' }],
-        friends: [{ type: Schema.Types.ObjectId, ref: 'user' }],
+        thoughts: [{ type: Types.ObjectId, ref: 'thought' }],
+        friends: [{ type: Types.ObjectId, ref: 'user' }],
     },
     {
         toJSON: {

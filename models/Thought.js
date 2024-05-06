@@ -18,6 +18,7 @@ const thoughtSchema = new Schema(
         },
         username: {
             type: String,
+            immutable: true,
             required: true,
         },
         reactions: [reactionSchema],
