@@ -1,11 +1,12 @@
-const { Schema, Types } = require('mongoose');
-const User = require('../models/User');
+const { Schema } = require('mongoose');
+const { User, Thought } = require('../models');
 
 module.exports = {
     // get all users
     async getUsers(req, res) {
         try {
-            const users = await User.find();
+            const users = await User.find()
+                .select('-__v');
             res.json(users);
         } catch (err) {
             res.status(500).json(err);
@@ -15,13 +16,8 @@ module.exports = {
     async getSingleUser(req, res) {
         try {
             const user = await User.findOne({ _id: req.params.userId })
-            // ?: Is this important?    
-            // .select('-__v');
-
-            if (!user) {
-                return res.status(404).json({ message: 'No user with that ID' });
-            }
-
+                .select('-__v');
+            if (!user) return res.json({ message: 'No user with that ID' });
             res.json(user);
         } catch (err) {
             res.status(500).json(err);
@@ -30,8 +26,8 @@ module.exports = {
     // create a new user
     async createUser(req, res) {
         try {
-            const dbUserData = await User.create(req.body);
-            res.json(dbUserData);
+            const user = await User.create(req.body);
+            res.json(user);
         } catch (err) {
             res.status(500).json(err);
         }
@@ -41,13 +37,10 @@ module.exports = {
         try {
             const user = await User.findOneAndUpdate(
                 { _id: req.params.userId },
-                req.body,
-                { new: true }
+                { $set: req.body },
+                { new: true },
             )
-
-            if (!user) {
-                return res.status(404).json({ message: 'No user with that ID' });
-            }
+            if (!user) return res.json({ message: 'No user with that ID' });
 
             res.json(user);
         } catch (err) {
@@ -57,11 +50,10 @@ module.exports = {
     // remove a user by :userID
     async removeUser(req, res) {
         try {
-            const user = await User.findOneAndDelete({ _id: req.params.userId })
+            const user = await User.findOneAndDelete({ _id: req.params.userId });
+            if (!user) return res.json({ message: 'No user with that ID' });
 
-            if (!user) {
-                return res.status(404).json({ message: 'No user with that ID' });
-            }
+            await Thought.deleteMany({ _id: { $in: user.thoughts } });
 
             res.json(user);
         } catch (err) {
@@ -71,19 +63,14 @@ module.exports = {
     // add a friend of user by :userID and :friendId
     async addFriend(req, res) {
         try {
-            const user = await User.findOne({ _id: req.params.userId });
-            const friend = await User.findOne({ _id: req.params.friendId })
+            const friend = await User.findOne({ _id: req.params.friendId });
+            if (!friend) return res.json(`User ${req.params.friendId} not found`);
 
-            if (!user || !friend) {
-                return res.json({ message: [].concat(!user ? `UserId: No user with ID ${req.params.userId}.` : [], !friend ? `FriendId: No user with ID ${req.params.friendId}` : []) });
-            }
-
-            if (user.friends.includes(friend._id)) {
-                return res.json({ message: "User already has friend registered" })
-            }
-
-            user.friends.push(friend._id);
-            user.save();
+            const user = await User.findOneAndUpdate(
+                { _id: req.params.userId },
+                { $addToSet: { friends: friend._id } },
+                { new: true });
+            if (!user) return res.json(`User ${req.params.userId} not found`);
 
             res.json(user);
         } catch (err) {
@@ -93,19 +80,11 @@ module.exports = {
     // remove a friend of user by :userID and :friendId
     async removeFriend(req, res) {
         try {
-            const user = await User.findOne({ _id: req.params.userId })
-
-
-            if (!user.friends.includes(req.params.friendId)) {
-                return res.json({message: "User doesn't have that friend registered"})
-            }
-            
-            user.friends.pop(req.params.friendId);
-            user.save();
-
-            if (!user) {
-                return res.status(404).json({ message: 'No user with that ID' });
-            }
+            const user = await User.findAndUpdate(
+                { _id: req.params.userId },
+                { $pull: { friends: req.params.friendId } },
+                { new: true });
+            if (!user) return res.status(404).json({ message: 'No user with that ID' });
 
             res.json(user);
         } catch (err) {
