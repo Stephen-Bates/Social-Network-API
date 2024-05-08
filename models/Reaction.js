@@ -12,8 +12,9 @@ const reactionSchema = new Schema(
             required: true,
             maxlength: 280,
         },
-        username: {
-            type: String,
+        user: {
+            type: Types.ObjectId,
+            ref: 'user',
             required: true,
             immutable: true,
         },
@@ -25,8 +26,10 @@ const reactionSchema = new Schema(
         },
     },
     {
+        _id: false,
         toJSON: {
             getters: true,
+
         },
     }
 );
