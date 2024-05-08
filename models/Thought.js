@@ -16,7 +16,7 @@ const thoughtSchema = new Schema(
             default: () => Date.now(),
             get: formatDate,
         },
-        userId: {
+        user: {
             type: Types.ObjectId,
             ref: 'user',
             immutable: true,
@@ -33,7 +33,7 @@ const thoughtSchema = new Schema(
 );
 
 thoughtSchema.virtual('reactionCount').get(function () {
-    return this.reactions.length
+    return this.reactions?.length
 });
 
 const Thought = model('thought', thoughtSchema);

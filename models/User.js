@@ -20,6 +20,8 @@ const userSchema = new Schema(
                 message: props => `${props.value} is not a valid email address`
             },
         },
+        //These fields violate Principle of Least Cardinality, don't do this in the future
+        //Use virtual population instead
         thoughts: [{ type: Types.ObjectId, ref: 'thought' }],
         friends: [{ type: Types.ObjectId, ref: 'user' }],
     },
@@ -31,7 +33,7 @@ const userSchema = new Schema(
 );
 
 userSchema.virtual('friendCount').get(function () {
-    return this.friends.length
+    return this.friends?.length
 });
 
 const User = model('user', userSchema);
