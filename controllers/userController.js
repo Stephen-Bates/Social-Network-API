@@ -16,7 +16,8 @@ module.exports = {
     async getSingleUser(req, res) {
         try {
             const user = await User.findOne({ _id: req.params.userId })
-                .select('-__v');
+                .select('-__v')
+                .populate('thoughts friends');
             if (!user) return res.json({ message: 'No user with that ID' });
             res.json(user);
         } catch (err) {
@@ -80,7 +81,7 @@ module.exports = {
     // remove a friend of user by :userID and :friendId
     async removeFriend(req, res) {
         try {
-            const user = await User.findAndUpdate(
+            const user = await User.findOneAndUpdate(
                 { _id: req.params.userId },
                 { $pull: { friends: req.params.friendId } },
                 { new: true });
