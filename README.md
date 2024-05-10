@@ -40,7 +40,9 @@ Anyone is free to submit requests for features they believe may improve the proj
 
 ## Tests
 
-Users may download and host their own server, then test it by making API calls to the server. 
+Users may download and host their own server, then test it by making API calls to the server.
+
+Users will need to download mongodb in order to host the database
 
 ## Questions
 
