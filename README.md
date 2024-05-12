@@ -31,7 +31,8 @@ This project utilizes Mongodb to handle the database, so users will need to down
 
 Anyone may fork the project and adjust it as they see fit
 
-https://drive.google.com/file/d/1bUgOXtQfkOabRem4n69gGRki-fXQEuUO/view?usp=drive_link
+[SocNet_demo.webm](https://github.com/Stephen-Bates/Social-Network-API/assets/151067004/99c62415-b609-4b0a-84ec-5ed4417df204)
+
 ## License
 
 
