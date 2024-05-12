@@ -25,6 +25,7 @@ This is a API package for handling backend data storage for a hypothetical socia
 ## Installation
 
 This project can be downloaded cloned through the Github repo. Navigate to the install directory and run 'npm i' to install all dependancies, then run 'node .' to start the server.
+This project utilizes Mongodb to handle the database, so users will need to download and run that as well.
 
 ## Usage
 
@@ -40,7 +41,7 @@ Anyone is free to submit requests for features they believe may improve the proj
 
 ## Tests
 
-Users may download and host their own server, then test it by making API calls to the server. 
+Once users have started their own server, they can test it by making API calls to the server.
 
 ## Questions
 
